@@ -97,7 +97,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
   private:
-
+    int sendfirst;
     bool emptyRows, runFlag, sendFlag, end;
     bool numberic(const QString code);
     bool isNumber(const QString &string);
@@ -126,7 +126,9 @@ protected:
     QProcess* printProcess;
     double* units;
     double* pass;
-    QString at, w, before, myString, temp, number;
+    QString f,g,i,j,a,l,t,w,temp;
+    QString at, before, number;
+    bool wFlag;
 
 } ;
 

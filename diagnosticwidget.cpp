@@ -36,6 +36,7 @@ DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
   sendFlag=false;
   ui->notFoundLabel->hide();
 
+  wFlag=false;
   end = false;
   //1st line
   ui->lowerTable->setSpan(0, 1, 1, 2);
@@ -147,7 +148,7 @@ DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
   QObject::connect(this,SIGNAL(changeO4(int)),ui->overflowBar4, SLOT(setValue(int)));
   temp="";
   at="";
-  k=0;
+  k=1;
   post=0;
   units = new double[4];
   for(int i = 0; i<4;i++)
@@ -155,7 +156,7 @@ DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
   pass = new double[4];
   for(int i = 0; i<4;i++)
       pass[i]= 0;
-  myString="";
+
 
 }
 bool DiagnosticWidget::isNumber(const QString &string) {
@@ -1035,6 +1036,24 @@ void DiagnosticWidget::sendDataToDriver(QVector<packetType> paramData)
     ui->ll->setText("");
     ui->t->setText("");
     ui->w->setText("");
+    units[0]=0;
+    units[1]=0;
+    units[2]=0;
+    units[3]=0;
+    pass[0]=0;
+    pass[1]=0;
+    pass[2]=0;
+    pass[3]=0;
+
+curTableValues.rationValue1 = "";
+curTableValues.rationValue2 = "";
+curTableValues.rationValue3 = "";
+curTableValues.rationValue4 = "";
+
+curTableValues.overflowValue1 = "";
+curTableValues.overflowValue2 = "";
+curTableValues.overflowValue3 = "";
+curTableValues.overflowValue4 = "";
     sendFlag=false;
     if (ui -> numbersBox -> count() != 0)
       number = ui -> numbersBox -> currentText() ;
@@ -1195,127 +1214,179 @@ void DiagnosticWidget::upgradeDialog(int i)
 void DiagnosticWidget::closeWaitingDialog(QByteArray array)
 {
   packet += array ;
-  myString = packet.data();
 
   int idxToAdd = chosenRatioNormGroup * 20;
-//if( (k%2) ){
-
-  ui->xx->setText(myString);
-
-   if(packet.contains("f")){
-       int p = packet.indexOf("f");
-        myString.remove(p,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);
+if( !(k%2) ){
+  if(packet.contains("f")){
+   w.clear();
+      int p = packet.indexOf("f");
+      QString check;
+      int i = p-1;
+      do{
+          w.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
       }
-      at.insert(at.length()-1,".");
-      units[0]= at.toDouble();
-      mResDbFileSL[2 + idxToAdd] = at;
-      curTableValues.rationValue1 = at;
-      ui->f->setText(QString::number(units[0]));
-      emit changeR1(units[0]);
-      at.clear();
-      if(packet.contains("g")){
-      myString.remove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);
+      while(numberic(check.append(packet.at(i))));
+      w.insert(w.length()-1,".");
+      pass[3]= w.toDouble();
+      mResDbFileSL[18 + idxToAdd] = w;
+      curTableValues.overflowValue4 = w;
+      ui->w->setText(QString::number(pass[3]));
+      emit changeO4(pass[3]);
+      int pos = packet.indexOf("f");
+      packet.remove(pos,1);
+   int post = packet.indexOf("f");
+   packet.remove(post,1);
+ }
+ if(packet.contains("g")){
+     f.clear();
+     int p = packet.indexOf("g");
+     QString check;
+     int i = p-1;
+     do{
+         f.push_front(packet.at(i));
+         packet.remove(i,1);
+
+         i--;
+     }
+     while(numberic(check.append(packet.at(i))));
+     f.insert(f.length()-1,".");
+
+     units[0]= f.toDouble();
+     mResDbFileSL[2 + idxToAdd] = f;
+     curTableValues.rationValue1 = f;
+     ui->f->setText(QString::number(units[0]));
+     emit changeR1(units[0]);
+
+     int pos = packet.indexOf("g");
+     packet.remove(pos,1);
+  }
+  if(packet.contains("i")){
+      g.clear();
+      int p = packet.indexOf("i");
+      QString check;
+      int i = p-1;
+      do{
+          g.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
       }
-      at.insert(at.length()-1,".");
-      units[1]= at.toDouble();
-      mResDbFileSL[4 + idxToAdd] =at;
-      curTableValues.rationValue2 = at;
+      while(numberic(check.append(packet.at(i))));
+      g.insert(g.length()-1,".");
+      units[1]= g.toDouble();
+      mResDbFileSL[4 + idxToAdd] = g;
+      curTableValues.rationValue2 = g;
       ui->g->setText(QString::number(units[1]));
       emit changeR2(units[1]);
-      at.clear();
+      int pos = packet.indexOf("i");
+      packet.remove(pos,1);
+}
+  if(packet.contains("j")){
+      i.clear();
+      int p = packet.indexOf("j");
+      QString check;
+      int is = p-1;
+      do{
+          i.push_front(packet.at(is));
+          packet.remove(is,1);
+          is--;
       }
-      if(packet.contains("i")){
-      myStringremove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);
-      }
-      at.insert(at.length()-1,".");
-      units[2]= at.toDouble();
-      mResDbFileSL[6 + idxToAdd] = at;
-      curTableValues.rationValue3 = at;
+      while(numberic(check.append(packet.at(is))));
+      i.insert(i.length()-1,".");
+      units[2]= i.toDouble();
+      mResDbFileSL[6 + idxToAdd] = i;
+      curTableValues.rationValue3 = i;
       ui->i->setText(QString::number(units[2]));
       emit changeR3(units[2]);
-      at.clear();
-      }
-      if(packet.contains("j")){
-      myString.remove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);
-      }
+      int pos = packet.indexOf("j");
+      packet.remove(pos,1);
 
-      at.insert(at.length()-1,".");
-      units[3]= at.toDouble();
-      mResDbFileSL[8 + idxToAdd] = at;
-      curTableValues.rationValue4 = at;
+  }
+  if(packet.contains("a")){
+      j.clear();
+      int p = packet.indexOf("a");
+      QString check;
+      int i = p-1;
+      do{
+          j.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
+      }
+      while(numberic(check.append(packet.at(i))));
+      j.insert(j.length()-1,".");
+      units[3]= j.toDouble();
+      mResDbFileSL[8 + idxToAdd] = j;
+      curTableValues.rationValue4 = j;
       ui->j->setText(QString::number(units[3]));
       emit changeR4(units[3]);
-      at.clear();
+      int pos = packet.indexOf("a");
+      packet.remove(pos,1);
+  }
+  if(packet.contains("l")){
+      a.clear();
+      int p = packet.indexOf("l");
+      QString check;
+      int i = p-1;
+      do{
+          a.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
       }
-      if(packet.contains("a")){
-      myString.remove(0,1);//packet.remove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);//packet.remove(0,1);
-      }
-      at.insert(at.length()-1,".");
-      pass[0]= at.toDouble();
-      mResDbFileSL[12 + idxToAdd] = at;
-      curTableValues.overflowValue1 = at;
+      while(numberic(check.append(packet.at(i))));
+      a.insert(a.length()-1,".");
+
+      pass[0]= a.toDouble();
+      mResDbFileSL[12 + idxToAdd] = a;
+      curTableValues.overflowValue1 = a;
       ui->a->setText(QString::number(pass[0]));
       emit changeO1(pass[0]);
-      at.clear();
+      int pos = packet.indexOf("l");
+      packet.remove(pos,1);
+  }
+  if(packet.contains("t")){
+      l.clear();
+      int p = packet.indexOf("t");
+      QString check;
+      int i = p-1;
+      do{
+          l.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
       }
-      if(packet.contains("l")){
-      myString.remove(0,1);//packet.remove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);//packet.remove(0,1);
-      }
-      at.insert(at.length()-1,".");
-      pass[1]= at.toDouble();
-      mResDbFileSL[14 + idxToAdd] = at;
-      curTableValues.overflowValue2 = at;
+      while(numberic(check.append(packet.at(i))));
+
+      l.insert(l.length()-1,".");
+      pass[1]= l.toDouble();
+      mResDbFileSL[14 + idxToAdd] = l;
+      curTableValues.overflowValue2 = l;
       ui->ll->setText(QString::number(pass[1]));
       emit changeO2(pass[1]);
-      at.clear();
-   }
-   if(packet.contains("t")){
-      myString.remove(0,1);
-      while(numberic(myString.left(1))){
-          at.append(myString.left(1));
-          myString.remove(0,1);
+      int pos = packet.indexOf("t");
+      packet.remove(pos,1);
+  }
+  if(packet.contains("w")){
+      t.clear();
+      wFlag=true; // wyzerować po sygnale k
+      int p = packet.indexOf("w");
+      QString check;
+      int i = p-1;
+      do{
+          t.push_front(packet.at(i));
+          packet.remove(i,1);
+          i--;
       }
-      at.insert(at.length()-1,".");
-      pass[2]= at.toDouble();
-      mResDbFileSL[16 + idxToAdd] = at;
-      curTableValues.overflowValue3 = at;
+      while(numberic(check.append(packet.at(i))));
+
+      t.insert(t.length()-1,".");
+      int pos = packet.indexOf("w");
+      pass[2]= t.toDouble();
+      mResDbFileSL[16 + idxToAdd] = t;
+      curTableValues.overflowValue3 = t;
       ui->t->setText(QString::number(pass[2]));
       emit changeO3(pass[2]);
-      at.clear();
-    }
-   if(packet.contains("w")){
-       myString.remove(0,1);
-       while(numberic(myString.left(1))){
-           at.append(myString.left(1));
-           myString.remove(0,1);
-       }
-       at.insert(at.length()-1,".");
-       pass[2]= at.toDouble();
-       mResDbFileSL[16 + idxToAdd] = at;
-       curTableValues.overflowValue3 = at;
-       ui->t->setText(QString::number(pass[2]));
-       emit changeO3(pass[2]);
-       at.clear();
-     }
-    packet.clear();
+      packet.remove(pos,1);
+  }
       curTableValues.rationMin = mResDbFileSL[0 + idxToAdd].toDouble();
       curTableValues.rationMax = mResDbFileSL[1 + idxToAdd].toDouble();
       curTableValues.overflowMin = mResDbFileSL[10 + idxToAdd].toDouble();
@@ -1376,16 +1447,14 @@ void DiagnosticWidget::closeWaitingDialog(QByteArray array)
       }
       clearTableDataContents();
       fillInTable(0, mResDbFileSL);//update table
-    } // contains"w"
-  }// contains"f"
-//}// !k
+}// !k
   if (packet.contains("\n") || packet.contains("k") )
   {
     packet = packet.simplified() ;
     if (packet.contains("k") )
     {   runFlag=true;
+        wFlag=false;
         k++;
-//      QVector<packetType> tmp{packetType("p", 50)};comIO->enqueueOutgoing(tmp);
         if(r3WorkaroundSendAgain//seems like hw didnt started - try again
                 && r3WorkaroundTryNum < 1)
         {
@@ -1428,9 +1497,7 @@ void DiagnosticWidget::closeWaitingDialog(QByteArray array)
       ui -> timeLabel -> setText(mDbFileSL[1 + idxToAdd] + " µs") ;
       ui -> frequencyLabel -> setText(mDbFileSL[2 + idxToAdd] + " Hz") ;
       ui -> counterLabel -> setText(mDbFileSL[3 + idxToAdd] + " cykli") ;
-
       ui -> infoLabel -> setText("Aktualnie wykonywana podgrupa: 1") ;
-
     }
     packet.clear() ;
   }
