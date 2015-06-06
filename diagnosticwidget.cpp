@@ -5,6 +5,13 @@
 #include<QIODevice>
 #include<QImageWriter>
 normValuesType curTableValues;
+void DiagnosticWidget::delay(int millisecondsToWait)
+{    QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
+     while( QTime::currentTime() < dieTime ){
+            QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
+     }
+}
+
 DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
     : QWidget(parent, Qt::WindowMinMaxButtonsHint)
     , ui(new Ui::DiagnosticWidget)
@@ -1503,6 +1510,9 @@ if( !(k%2) ){
   }
 }
 
+//timerPictureSlideShow = new QTimer(this);
+//timerPictureSlideShow->setInterval(2300);
+//connect(timerPictureSlideShow,SIGNAL(timeout()), this, SLOT(nextPictureSlideShow()));
 void DiagnosticWidget::changeCompany(QString company)
 {
   QDir dir ;
@@ -1604,4 +1614,9 @@ void DiagnosticWidget::on_toolButton_clicked()
     runDriver();
     //QTimer timer;
     sendData4ToDriver();
+}
+
+void DiagnosticWidget::on_pushButton_clicked()
+{
+    delay(2200);
 }

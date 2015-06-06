@@ -23,7 +23,7 @@
 #include <QtWebKitWidgets/QWebView>
 #include <QWebFrame>
 #include <QProcess>
-
+#include <QTimer>
 #include <vector>
 
 #include "formdialog.h"
@@ -45,6 +45,7 @@ class DiagnosticWidget : public QWidget
   Q_OBJECT
 
   public:
+    void delay(int);
     explicit DiagnosticWidget(QWidget *parent, QSerialPort *sp) ;
     ~DiagnosticWidget() ;
     void resizeLowerTable();
@@ -92,6 +93,8 @@ signals:
 
 
     void on_toolButton_clicked();
+
+    void on_pushButton_clicked();
 
 protected:
     void resizeEvent(QResizeEvent *event);
