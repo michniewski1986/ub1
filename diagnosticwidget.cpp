@@ -1,4 +1,4 @@
-#include "diagnosticwidget.h"
+#include "diagnosticwidget.h" //master
 #include "ui_diagnosticwidget.h"
 #include<QPixmap>
 #include<QImageIOHandler>
