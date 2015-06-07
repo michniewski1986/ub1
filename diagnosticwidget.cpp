@@ -5,6 +5,7 @@
 #include<QIODevice>
 #include<QImageWriter>
 normValuesType curTableValues;
+#include<QTime>
 void DiagnosticWidget::delay(int millisecondsToWait)
 {    QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
      while( QTime::currentTime() < dieTime ){
