@@ -1461,6 +1461,9 @@ if( !(k%2) ){
     {   runFlag=true;
         wFlag=false;
         k++;
+        if( (k%2) ){
+            sleep(2);
+        }
         if(r3WorkaroundSendAgain//seems like hw didnt started - try again
                 && r3WorkaroundTryNum < 1)
         {
