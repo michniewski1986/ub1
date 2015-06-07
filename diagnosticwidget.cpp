@@ -6,8 +6,8 @@
 #include<QImageWriter>
 normValuesType curTableValues;
 #include<QTime>
-void DiagnosticWidget::delay(int millisecondsToWait)
-{    QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
+void DiagnosticWidget::delay()
+{    QTime dieTime = QTime::currentTime().addMSecs(5500);
      while( QTime::currentTime() < dieTime ){
             QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
      }// master
@@ -164,8 +164,6 @@ DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
   pass = new double[4];
   for(int i = 0; i<4;i++)
       pass[i]= 0;
-
-
 }
 bool DiagnosticWidget::isNumber(const QString &string) {
     return string.toDouble() != 0.0;
@@ -1619,5 +1617,12 @@ void DiagnosticWidget::on_toolButton_clicked()
 
 void DiagnosticWidget::on_pushButton_clicked()
 {
-    delay(2200);
+    //delay();
+    usleep(5500);
+}
+
+void DiagnosticWidget::on_pushButton_2_clicked()
+{
+    sleep(5);
+ //    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 }

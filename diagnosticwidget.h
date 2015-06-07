@@ -32,9 +32,12 @@
 #include "normdialog.h"
 #include "printingformdialog.h"
 #include "ownerInfoType.h"
-
 #include "slidingstackedwidget.h"
-
+#include <unistd.h>
+#include<time.h>
+#include<ctime>
+#include <chrono>
+#include <thread>
 namespace Ui
 {
   class DiagnosticWidget ;
@@ -45,7 +48,9 @@ class DiagnosticWidget : public QWidget
   Q_OBJECT
 
   public:
-    void delay(int);
+
+
+    void delay();
     explicit DiagnosticWidget(QWidget *parent, QSerialPort *sp) ;
     ~DiagnosticWidget() ;
     void resizeLowerTable();
@@ -95,6 +100,8 @@ signals:
     void on_toolButton_clicked();
 
     void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 protected:
     void resizeEvent(QResizeEvent *event);
