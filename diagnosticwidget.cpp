@@ -10,7 +10,7 @@ void DiagnosticWidget::delay(int millisecondsToWait)
 {    QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
      while( QTime::currentTime() < dieTime ){
             QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
-     }
+     }// master
 }
 
 DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
