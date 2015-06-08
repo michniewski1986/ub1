@@ -107,6 +107,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
   private:
+    bool noEntry;
     int sendfirst;
     bool emptyRows, runFlag, sendFlag, end;
     bool numberic(const QString code);

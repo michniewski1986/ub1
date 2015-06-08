@@ -44,6 +44,7 @@ DiagnosticWidget::DiagnosticWidget(QWidget *parent, QSerialPort *sp)
   sendFlag=false;
   ui->notFoundLabel->hide();
 
+  noEntry=true;
   wFlag=false;
   end = false;
   //1st line
@@ -1222,7 +1223,8 @@ void DiagnosticWidget::closeWaitingDialog(QByteArray array)
   packet += array ;
 
   int idxToAdd = chosenRatioNormGroup * 20;
-if( !(k%2) ){
+//if( !(k%2) ){
+if(noEntry==false){
   if(packet.contains("f")){
    w.clear();
       int p = packet.indexOf("f");
@@ -1498,7 +1500,8 @@ if( !(k%2) ){
     {
       r3WorkaroundSendAgain = false;//its ok hw started
       if(ui->subgroupLabel->text().length() != 2){
-           ui -> subgroupLabel -> setText(QString::number(actualNumber) +"P" ) ;
+          noEntry=false;
+          ui -> subgroupLabel -> setText(QString::number(actualNumber) +"P" ) ;
       }
 
       const int idxToAdd = chosenRatioNormGroup * 8;
@@ -1508,6 +1511,10 @@ if( !(k%2) ){
       ui -> counterLabel -> setText(mDbFileSL[3 + idxToAdd] + " cykli") ;
       ui -> infoLabel -> setText("Aktualnie wykonywana podgrupa: 1") ;
     }
+    else if(packet.contains("2")){
+        noEntry=true;
+    }
+
     packet.clear() ;
   }
 }
